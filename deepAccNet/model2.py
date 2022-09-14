@@ -289,9 +289,12 @@ def calculate_LDDT(estogram, mask, center=7):
     # Get on the same device as indices
     device = estogram.device
 
-    # Remove diagonal from calculation
+    # Remove diagonal and residues i-4 to i+4 from calculation
     nres = mask.shape[-1]
-    mask = torch.mul(mask, torch.ones((nres, nres)).to(device) - torch.eye(nres).to(device))
+    diags = torch.ones((nres, nres)).to(device) - torch.eye(nres).to(device)
+    for i in range(1,5):
+        diags = diags - torch.diag(torch.ones(nres-i), diagonal=i)
+        diags = diags - torch.diag(torch.ones(nres-i), diagonal=-1*i)
     masked = torch.mul(estogram, mask)
 
     p0 = (masked[center]).sum(axis=0)
