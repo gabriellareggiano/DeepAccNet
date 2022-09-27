@@ -293,8 +293,8 @@ def calculate_LDDT(estogram, mask, center=7):
     nres = mask.shape[-1]
     diags = torch.ones((nres, nres)).to(device) - torch.eye(nres).to(device)
     for i in range(1,5):
-        diags = diags - torch.diag(torch.ones(nres-i), diagonal=i)
-        diags = diags - torch.diag(torch.ones(nres-i), diagonal=-1*i)
+        diags = diags - torch.diag(torch.ones(nres-i).to(device), diagonal=i).to(device)
+        diags = diags - torch.diag(torch.ones(nres-i).to(device), diagonal=-1*i).to(device)
     masked = torch.mul(estogram, mask)
 
     p0 = (masked[center]).sum(axis=0)
